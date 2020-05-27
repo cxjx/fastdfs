@@ -4,42 +4,42 @@ FROM alpine
 ENV HOME /root
 
 # 安装准备
-RUN    apk update \
-        && apk add --no-cache --virtual .build-deps bash gcc libc-dev make openssl-dev pcre-dev zlib-dev linux-headers curl gnupg libxslt-dev gd-dev geoip-dev git wget
+RUN apk update \
+      && apk add --no-cache --virtual .build-deps bash gcc libc-dev make openssl-dev pcre-dev zlib-dev linux-headers curl gnupg libxslt-dev gd-dev geoip-dev git wget
 
 # 复制工具
 ADD soft ${HOME}
 
 RUN cd ${HOME} \
-    && tar xvf libfastcommon-master.tar.gz \
-    && tar xvf fastdfs-master.tar.gz \
-    && tar xvf fastdfs-nginx-module-master.tar.gz \
+    && tar xvf libfastcommon-1.0.43.tar.gz \
+    && tar xvf fastdfs-6.06.tar.gz \
+    && tar xvf fastdfs-nginx-module-1.22.tar.gz \
     && tar xvf fastdht-master.tar.gz \
     && tar xvf nginx-1.15.3.tar.gz \
     && tar xvf db-18.1.32.tar.gz
 
 # 下载libfastcommon、fastdfs、fastdfs-nginx-module、fastdht、berkeley-db、nginx插件的源码
 #RUN     cd ${HOME} \
-#        && curl -L https://github.com/happyfish100/libfastcommon/archive/master.tar.gz -o libfastcommon-master.tar.gz \
-#        && curl -L https://github.com/happyfish100/fastdfs/archive/master.tar.gz -o fastdfs-master.tar.gz \
-#        && curl -L https://github.com/happyfish100/fastdfs-nginx-module/archive/master.tar.gz -o fastdfs-nginx-module-master.tar.gz \
+#        && curl -L https://github.com/happyfish100/libfastcommon/archive/V1.0.43.tar.gz -o libfastcommon-1.0.43.tar.gz \
+#        && curl -L https://github.com/happyfish100/fastdfs/archive/V6.06.tar.gz -o fastdfs-6.06.tar.gz \
+#        && curl -L https://github.com/happyfish100/fastdfs-nginx-module/archive/V1.22.tar.gz -o fastdfs-nginx-module-1.22.tar.gz \
 #        && curl -L https://github.com/happyfish100/fastdht/archive/master.tar.gz -o fastdht-master.tar.gz \
 #        && curl -L http://nginx.org/download/nginx-1.15.3.tar.gz -o nginx-1.15.3.tar.gz \
 #        && wget --http-user=username --http-passwd=password https://edelivery.oracle.com/akam/otn/berkeley-db/db-18.1.32.tar.gz \
-#        && tar xvf libfastcommon-master.tar.gz \
-#        && tar xvf fastdfs-master.tar.gz \
-#        && tar xvf fastdfs-nginx-module-master.tar.gz \
+#        && tar xvf libfastcommon-1.0.43.tar.gz \
+#        && tar xvf fastdfs-6.06.tar.gz \
+#        && tar xvf fastdfs-nginx-module-1.22.tar.gz \
 #        && tar xvf fastdht-master.tar.gz \
 #        && tar xvf nginx-1.15.3.tar.gz \
 #        && tar xvf db-18.1.32.tar.gz
 
 # 安装libfastcommon
-RUN     cd ${HOME}/libfastcommon-master/ \
+RUN     cd ${HOME}/libfastcommon-1.0.43/ \
         && ./make.sh \
         && ./make.sh install
 
 # 安装fastdfs
-RUN     cd ${HOME}/fastdfs-master/ \
+RUN     cd ${HOME}/fastdfs-6.06/ \
         && ./make.sh \
         && ./make.sh install
 
@@ -59,6 +59,7 @@ RUN     cd ${HOME}/fastdht-master/ \
 RUN     cd /etc/fdfs/ \
         && cp storage.conf.sample storage.conf \
         && cp tracker.conf.sample tracker.conf \
+        && cp storage_ids.conf.sample storage_ids.conf \
         && cp client.conf.sample client.conf \
         && sed -i "s|/home/yuqing/fastdfs|/var/local/fdfs/tracker|g" /etc/fdfs/tracker.conf \
         && sed -i "s|/home/yuqing/fastdfs|/var/local/fdfs/storage|g" /etc/fdfs/storage.conf \
@@ -68,16 +69,16 @@ RUN     cd /etc/fdfs/ \
 
 # 获取nginx源码，与fastdfs插件一起编译
 RUN     cd ${HOME} \
-        && chmod u+x ${HOME}/fastdfs-nginx-module-master/src/config \
+        && chmod u+x ${HOME}/fastdfs-nginx-module-1.22/src/config \
         && cd nginx-1.15.3 \
-        && ./configure --add-module=${HOME}/fastdfs-nginx-module-master/src \
+        && ./configure --add-module=${HOME}/fastdfs-nginx-module-1.22/src \
         && make && make install
 
 # 设置nginx和fastdfs联合环境，并配置nginx
-RUN     cp ${HOME}/fastdfs-nginx-module-master/src/mod_fastdfs.conf /etc/fdfs/ \
+RUN     cp ${HOME}/fastdfs-nginx-module-1.22/src/mod_fastdfs.conf /etc/fdfs/ \
         && sed -i "s|^store_path0.*$|store_path0=/var/local/fdfs/storage|g" /etc/fdfs/mod_fastdfs.conf \
         && sed -i "s|^url_have_group_name =.*$|url_have_group_name = true|g" /etc/fdfs/mod_fastdfs.conf \
-        && cd ${HOME}/fastdfs-master/conf/ \
+        && cd ${HOME}/fastdfs-6.06/conf/ \
         && cp http.conf mime.types anti-steal.jpg /etc/fdfs/ \
         && echo -e "\
            events {\n\
