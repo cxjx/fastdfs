@@ -18,21 +18,6 @@ RUN cd ${HOME} \
     && tar xvf nginx-1.15.3.tar.gz \
     && tar xvf db-18.1.32.tar.gz
 
-# 下载libfastcommon、fastdfs、fastdfs-nginx-module、fastdht、berkeley-db、nginx插件的源码
-#RUN     cd ${HOME} \
-#        && curl -L https://github.com/happyfish100/libfastcommon/archive/V1.0.43.tar.gz -o libfastcommon-1.0.43.tar.gz \
-#        && curl -L https://github.com/happyfish100/fastdfs/archive/V6.06.tar.gz -o fastdfs-6.06.tar.gz \
-#        && curl -L https://github.com/happyfish100/fastdfs-nginx-module/archive/V1.22.tar.gz -o fastdfs-nginx-module-1.22.tar.gz \
-#        && curl -L https://github.com/happyfish100/fastdht/archive/master.tar.gz -o fastdht-master.tar.gz \
-#        && curl -L http://nginx.org/download/nginx-1.15.3.tar.gz -o nginx-1.15.3.tar.gz \
-#        && wget --http-user=username --http-passwd=password https://edelivery.oracle.com/akam/otn/berkeley-db/db-18.1.32.tar.gz \
-#        && tar xvf libfastcommon-1.0.43.tar.gz \
-#        && tar xvf fastdfs-6.06.tar.gz \
-#        && tar xvf fastdfs-nginx-module-1.22.tar.gz \
-#        && tar xvf fastdht-master.tar.gz \
-#        && tar xvf nginx-1.15.3.tar.gz \
-#        && tar xvf db-18.1.32.tar.gz
-
 # 安装libfastcommon
 RUN     cd ${HOME}/libfastcommon-1.0.43/ \
         && ./make.sh \
