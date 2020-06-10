@@ -17,8 +17,8 @@ sed -i "s/^keep_alive.*$/keep_alive = 1/g" /etc/fdfs/storage.conf
 sed -i "s/^##include \/home\/yuqing\/fastdht\/conf\/fdht_servers.conf/#include \/etc\/fdht\/fdht_servers.conf/g" /etc/fdfs/storage.conf
 
 # config storage_ids.conf
-sed -i '/^100001 / s/^\(.*\)$/100001   group1  $IP,$XIP:$XPORT/g' /etc/fdfs/storage_ids.conf
-sed -i '/^100002 / s/^\(.*\)$/#\1/g' /etc/fdfs/storage_ids.conf
+sed -i "/^100001 / s/^\(.*\)$/100001   group1  $IP,$XIP:$XPORT/g" /etc/fdfs/storage_ids.conf
+sed -i "/^100002 / s/^\(.*\)$/#\1/g" /etc/fdfs/storage_ids.conf
 sed -i "s/use_storage_id = false/use_storage_id = true/g" /etc/fdfs/client.conf
 sed -i "s/use_storage_id = false/use_storage_id = true/g" /etc/fdfs/tracker.conf
 
