@@ -91,13 +91,9 @@ ENV TZ Asia/Shanghai
 RUN apk add -U tzdata \
     && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# 配置启动脚本，在启动时中根据环境变量替换nginx端口、fastdfs端口
-# 默认nginx端口
-ENV WEB_PORT 80
-# 默认fastdfs端口
-ENV FDFS_PORT 22122
-# 默认fastdht端口
-ENV FDHT_PORT 11411
+# 默认fastdfs映射的外网ip和port, an outer (extranet) IP:PORT
+ENV XIP ""
+ENV XPORT 22122
 # 创建启动脚本
 ADD start.sh /
 
